@@ -13,6 +13,8 @@ import seisbench.models as sbm
 import time
 import tensorflow as tf
 
+DEFINE_NO_PLOT = True
+
 def numpy_to_stream(data, channel):
 
     # Additional information (optional)
@@ -46,7 +48,12 @@ df = pd.read_csv(metadata_path)
 ev_list = df['Earthquake Key'].to_list()
 dtfl = h5py.File("data\waveforms.hdf5", 'r')
 
-model = sbm.PhaseNet.from_pretrained("original")
+model = sbm.EQTransformer.from_pretrained("original")
+print(model.weights_docstring)
+
+time_count = 1
+average_time = 0
+total_time = 0
 
 for c, evi in enumerate(ev_list):
     dataset = dtfl.get(evi) 
@@ -64,15 +71,27 @@ for c, evi in enumerate(ev_list):
     for st in [st_z, st_n, st_e]:
         for trace in st:
             stream.append(trace)
-
-    print(model.weights_docstring)
     
     begin = time.time() 
     annotations = model.annotate(stream)
     end = time.time() 
-    print(f"\nTotal runtime of the annotation = {end - begin} seconds\n")
+    annotate_time = end - begin
+    print(f"\nRuntime of the annotation = {annotate_time} seconds\n")
+
+    total_time += annotate_time
+    average_time = total_time/time_count    
+    time_count+=1
+
+    print(f"\nAverage time for one annotation = {average_time} seconds \n")
+
     print(annotations)
 
+    if(annotations.count() <= 0):
+        print("Not detected\n")
+        continue
+    
+    if DEFINE_NO_PLOT:
+        continue
 
     fig = plt.figure(figsize=(15, 10))
     axs = fig.subplots(2, 1, sharex=True, gridspec_kw={'hspace': 0})
