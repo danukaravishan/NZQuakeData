@@ -35,17 +35,6 @@ def numpy_to_stream(data, channel):
     return stream
 
 
-def model_to_tf(model):
-    # Assuming your model is called 'model'
-    converter = tf.lite.TFLiteConverter.from_keras_model(model)
-    converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    tflite_model = converter.convert()
-
-    
-    # Save the converted model to a .tflite file
-    with open("PhaseNet_optimized.tflite", "wb") as f:
-        f.write(tflite_model)
-
 # Open the HDF5 file
 base_path = os.getcwd()
 database_dir = base_path + "\data"
@@ -58,8 +47,6 @@ ev_list = df['Earthquake Key'].to_list()
 dtfl = h5py.File("data\waveforms.hdf5", 'r')
 
 model = sbm.PhaseNet.from_pretrained("original")
-
-model_to_tf(model)
 
 for c, evi in enumerate(ev_list):
     dataset = dtfl.get(evi) 
