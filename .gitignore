@@ -4,3 +4,4 @@ data/metadata.csv
 *.pyc
 src/*.pyc
 data/log
+data/*.hdf5
