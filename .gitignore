@@ -1,3 +1,6 @@
 data/waveforms.csv
 data/waveforms.hdf5
 data/metadata.csv
+*.pyc
+src/*.pyc
+data/log
