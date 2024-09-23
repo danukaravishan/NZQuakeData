@@ -5,3 +5,5 @@ data/metadata.csv
 src/*.pyc
 data/log
 data/*.hdf5
+data/.DS_Store
+.DS_Store
