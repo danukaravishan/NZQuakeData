@@ -1,3 +1,5 @@
+## This script download earthquake cateloges 
+
 from obspy import UTCDateTime
 from obspy.clients.fdsn import Client
 import obspy

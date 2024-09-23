@@ -1,4 +1,6 @@
 ### Author : Danuka Ravishan 
+## Dependancy : Standalone script
+### Use to download waveform data from geonet
 ### Usage : Use the working directory as base, not the directory of script
 
 import seisbench

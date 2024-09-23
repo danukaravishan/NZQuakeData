@@ -30,22 +30,25 @@ def plot_time(filename):
     data_array_without_outliers = iqr_outlier_removal(data_array.copy())
 
     # Apply moving average
-    window_size = 3000
+    window_size = 1000
     smoothed_data = np.convolve(data_array_without_outliers, np.ones(window_size)/window_size, mode='valid')
     # Create the time axis (assuming data points are at regular intervals)
     time_axis = np.arange(len(smoothed_data))  # Creates an array from 0 to length-1
 
     # Customize the plot (optional)
     plt.figure(figsize=(10, 6))  # Set plot size
-    plt.xlabel("Annotation index")
-    plt.ylabel("Value")
-    plt.title("Annotation time variation")
+    plt.xlabel("Annotation index", fontsize=22, fontweight='bold')
+    plt.ylabel("Inference Time (s)", fontsize=22, fontweight='bold')
+    plt.title("Inference Time Variation", fontsize=30, fontweight='bold', pad=25)
 
     # Plot the data
     plt.plot(time_axis, smoothed_data)
 
     # Show the plot
     plt.grid(True)
+    for spine in plt.gca().spines.values():
+        spine.set_linewidth(2)  # Adjust the line width to make it bold
+
     plt.show()
 
 # Open the HDF5 file
@@ -107,6 +110,9 @@ def plot_waveforms():
         plt.ylabel('Amplitude counts', fontsize=12) 
         ax.set_xticklabels([])
         plt.show() 
+        inp = input("Press a key close!")
+        if inp == "r":
+            continue 
 
         for at in dataset.attrs:
             print(at, dataset.attrs[at])    
@@ -117,7 +123,7 @@ def plot_waveforms():
 
 def main():
     #plot_time("data/log/analysis/eqt/annotation.log")
-    plot_time("data/log/analysis/phasenet/annotation.log")
+    plot_time("data/log/analysis/eqt/annotation.log")
 
 
 if __name__ == "__main__":

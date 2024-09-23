@@ -13,7 +13,8 @@ import seisbench.models as sbm
 import time
 import tensorflow as tf
 
-DEFINE_NO_PLOT = True
+DEFINE_NO_PLOT = False
+
 
 def numpy_to_stream(data, channel):
 
@@ -41,12 +42,12 @@ def numpy_to_stream(data, channel):
 base_path = os.getcwd()
 database_dir = base_path + "\data"
 metadata_path = database_dir + "\metadata.csv"
-waveforms_path = database_dir + "\waveforms.hdf5"
+waveforms_path = database_dir + "\waveforms_new.hdf5"
 
 df = pd.read_csv(metadata_path)
 
 ev_list = df['Earthquake Key'].to_list()
-dtfl = h5py.File("data\waveforms.hdf5", 'r')
+dtfl = h5py.File(waveforms_path, 'r')
 
 model = sbm.EQTransformer.from_pretrained("original")
 print(model.weights_docstring)
@@ -55,6 +56,7 @@ time_count = 1
 average_time = 0
 total_time = 0
 
+# Here use the list of earthquakes that has happened from 2013 - 2022
 for c, evi in enumerate(ev_list):
     dataset = dtfl.get(evi) 
     if dataset == None :
@@ -76,13 +78,16 @@ for c, evi in enumerate(ev_list):
     annotations = model.annotate(stream)
     end = time.time() 
     annotate_time = end - begin
-    print(f"\nRuntime of the annotation = {annotate_time} seconds\n")
+
+    print("Annotation numer : "+str(time_count))
+    print("Earthquake ID : " +str(evi))
+    print(f"\nRuntime of the annotation = {annotate_time} seconds")
 
     total_time += annotate_time
     average_time = total_time/time_count    
     time_count+=1
 
-    print(f"\nAverage time for one annotation = {average_time} seconds \n")
+    print(f"Average time for one annotation = {average_time} seconds")
 
     print(annotations)
 
